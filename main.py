@@ -59,11 +59,11 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     #print(vgg_layer4_out.get_shape)
     #print(vgg_layer7_out.get_shape)
 
-    conv_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same', kernel_regularizer = tf.contrib.layers.l2_regularizer(1e-3))
-    output = tf.layers.conv2d_transpose(conv_1x1, num_classes, 4, 2, padding='same', kernel_regularizer = tf.contrib.layers.l2_regularizer(1e-3))
-    #output = tf.add(output, vgg_layer4_out)
-    output = tf.layers.conv2d_transpose(output,num_classes,4, 2, padding='same', kernel_regularizer = tf.contrib.layers.l2_regularizer(1e-3))
-    #output = tf.add(output, vgg_layer3_out)
+    conv_1x1 = tf.layers.conv2d(vgg_layer7_out, 4096, 1, padding='same', kernel_regularizer = tf.contrib.layers.l2_regularizer(1e-3))
+    output = tf.layers.conv2d_transpose(conv_1x1, 512, 4, 2, padding='same', kernel_regularizer = tf.contrib.layers.l2_regularizer(1e-3))
+    output = tf.add(output, vgg_layer4_out)
+    output = tf.layers.conv2d_transpose(output,256,4, 2, padding='same', kernel_regularizer = tf.contrib.layers.l2_regularizer(1e-3))
+    output = tf.add(output, vgg_layer3_out)
     output = tf.layers.conv2d_transpose(output,num_classes,16, 8, padding='same', kernel_regularizer = tf.contrib.layers.l2_regularizer(1e-3))
 
 
@@ -128,8 +128,8 @@ def run():
 
     correct_label = tf.placeholder(tf.float32,[None,image_shape[0],image_shape[1],num_classes])
     learning_rate = tf.placeholder(tf.float32)
-    epochs = 1
-    batch_size = 1
+    epochs = 10
+    batch_size = 8
 
     # Download pretrained vgg model
     helper.maybe_download_pretrained_vgg(data_dir)
